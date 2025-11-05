@@ -9,21 +9,42 @@ import java.io.File
 import java.io.FileOutputStream
 import javax.imageio.ImageIO
 
+object UmlOutput {
+    enum class UmlOutputType(val value: FileFormat) {
+        SVG(FileFormat.SVG),
+        PNG(FileFormat.PNG);
+
+        fun getContentType(): String = when(this) {
+            SVG -> "image/svg+xml"
+            PNG -> "image/png"
+        }
+    }
+
+    fun tryFindOutputByName(name: String): UmlOutputType? {
+        return try {
+            UmlOutputType.valueOf(name.uppercase())
+        } catch (e: IllegalArgumentException) {
+            null
+        }
+    }
+
+    fun findOutputByName(name: String): UmlOutputType {
+        return UmlOutputType.valueOf(name.uppercase())
+    }
+}
+
 object PlantUmlService {
 
-    fun generateImagePng(text: String): ByteArray {
+    fun generateImage(text: String, outputFormat: FileFormat = FileFormat.PNG): ByteArray {
 
         val reader = SourceStringReader(text)
 
         val outputStream = ByteArrayOutputStream()
 
-        val fileFormatOption = FileFormatOption(FileFormat.SVG)
+        val fileFormatOption = FileFormatOption(outputFormat)
 
         reader.outputImage(outputStream, fileFormatOption)
-//        reader.outputImage(outputStream)
 
         return outputStream.toByteArray()
     }
-
-//    fun generateImageSvg(text: String):
 }
