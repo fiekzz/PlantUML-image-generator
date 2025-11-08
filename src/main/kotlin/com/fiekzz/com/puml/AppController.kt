@@ -1,22 +1,29 @@
 package com.fiekzz.com.puml
 
 import com.fiekzz.com.puml.model.apiresponse.SuccessResponse
+import com.fiekzz.com.puml.model.plantuml.PlantUMLResponse
 import com.fiekzz.com.puml.model.plantuml.PlantUMLTextRequest
+import com.fiekzz.com.puml.utils.cache.UMLCache
 import com.fiekzz.com.puml.utils.contenttype.AppContentType
+import com.fiekzz.com.puml.utils.debug.AppLogger
 import com.fiekzz.com.puml.utils.debug.logger
+import com.fiekzz.com.puml.utils.plantuml.ImageService
 import com.fiekzz.com.puml.utils.plantuml.PlantUmlService
 import com.fiekzz.com.puml.utils.plantuml.UmlOutput
 import com.fiekzz.com.puml.utils.route.APIROUTES
 import com.fiekzz.com.puml.utils.streamreader.FileStreamReader
+import com.fiekzz.com.puml.utils.tracker.AccessTracker
 import com.fiekzz.com.puml.utils.validator.ValidFile
 import com.fiekzz.com.puml.utils.validator.ValidUMLText
 import lombok.extern.slf4j.Slf4j
+import org.slf4j.Logger
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -25,8 +32,10 @@ import javax.validation.Valid
 
 @Slf4j
 @RestController
-//@RequestMapping
-class AppController {
+@RequestMapping(APIROUTES.API_ROOT)
+class AppController(
+    private val imageService: ImageService,
+) {
 
     companion object {
         val AppLog = logger<AppController>()
@@ -78,8 +87,8 @@ class AppController {
         @Valid
         @RequestBody request: PlantUMLTextRequest
     ): ResponseEntity<ByteArray> {
-        AppLog.info(request.text, request.outputType)
-        return generateUmlResponse(request.text, request.outputType)
+        AppLog.info(request.source, request.outputType)
+        return generateUmlResponse(request.source, request.outputType)
     }
 
     private fun generateUmlResponse(text: String, type: String): ResponseEntity<ByteArray> {
@@ -96,4 +105,38 @@ class AppController {
 
         return headers
     }
+
+    @PostMapping(
+        APIROUTES.PLANTUML.POST_GENERATE_UML_CACHE,
+        consumes = [AppContentType.JSON]
+    )
+    fun postGeneratePlantUMLCache(
+        @Valid
+        @RequestBody request: PlantUMLTextRequest
+    ): ResponseEntity<PlantUMLResponse> {
+        val id = imageService.generateImage(request.source)
+
+        AppLog.info("TEST BAPAKKAU")
+
+        return ResponseEntity
+            .ok()
+            .body(PlantUMLResponse(
+                id = id,
+                url = request.source,
+            ))
+    }
+
+
+    @GetMapping(APIROUTES.PLANTUML.GET_IMAGE_ENDPOINT)
+    fun getViewImage(
+        @PathVariable id: String
+    ): ResponseEntity<ByteArray> {
+        val imageData = imageService.getImage(id) ?: return ResponseEntity.notFound().build()
+
+        return ResponseEntity
+            .ok()
+            .contentType(MediaType.IMAGE_PNG)
+            .body(imageData)
+    }
+
 }

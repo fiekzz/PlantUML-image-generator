@@ -8,6 +8,6 @@ import java.time.LocalDate
 
 data class PlantUMLTextRequest(
     @field:NotBlank(message = "Plantuml text")
-    val text: String,
+    val source: String,
     val outputType: String = "PNG",
 )

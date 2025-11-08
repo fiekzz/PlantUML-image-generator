@@ -34,17 +34,11 @@ object UmlOutput {
 }
 
 object PlantUmlService {
-
     fun generateImage(text: String, outputFormat: FileFormat = FileFormat.PNG): ByteArray {
-
         val reader = SourceStringReader(text)
-
         val outputStream = ByteArrayOutputStream()
-
         val fileFormatOption = FileFormatOption(outputFormat)
-
         reader.outputImage(outputStream, fileFormatOption)
-
         return outputStream.toByteArray()
     }
 }
