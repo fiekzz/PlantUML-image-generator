@@ -50,10 +50,12 @@ class ImageService(
     }
 
     private fun hash(text: String): String {
-        return com.google.common.hash.Hashing.sha256()
-            .hashString(text, Charsets.UTF_8)
+        val hashingText: String = System.currentTimeMillis().toString() + text
+        val hashedId = com.google.common.hash.Hashing.sha256()
+            .hashString(hashingText, Charsets.UTF_8)
             .toString()
             .substring(0, 16)
+        return hashedId
     }
 
     fun removeImage(id: String) {
