@@ -112,8 +112,6 @@ class AppController(
     ): ResponseEntity<PlantUMLResponse> {
         val id = imageService.generateImage(request.source)
 
-        AppLog.info("TEST BAPAKKAU")
-
         return ResponseEntity
             .ok()
             .body(PlantUMLResponse(
