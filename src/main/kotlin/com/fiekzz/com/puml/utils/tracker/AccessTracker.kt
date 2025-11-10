@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
 
 @Component
-@Slf4j
 class AccessTracker {
     private val lastAccess = ConcurrentHashMap<String, Long>()
 

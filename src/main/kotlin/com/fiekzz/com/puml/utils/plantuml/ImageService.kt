@@ -2,14 +2,12 @@ package com.fiekzz.com.puml.utils.plantuml
 
 import com.fiekzz.com.puml.utils.cache.UMLCache
 import com.fiekzz.com.puml.utils.debug.logger
-import com.fiekzz.com.puml.utils.lifecycle.AppLifeCycle
 import com.fiekzz.com.puml.utils.tracker.AccessTracker
-import lombok.extern.slf4j.Slf4j
 import org.springframework.stereotype.Service
 import java.io.File
 
-@Slf4j
 @Service
+
 class ImageService(
     private val umlCache: UMLCache,
     private val accessTracker: AccessTracker

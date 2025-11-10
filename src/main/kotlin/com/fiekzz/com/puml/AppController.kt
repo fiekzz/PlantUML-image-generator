@@ -3,6 +3,7 @@ package com.fiekzz.com.puml
 import com.fiekzz.com.puml.model.apiresponse.SuccessResponse
 import com.fiekzz.com.puml.model.plantuml.PlantUMLResponse
 import com.fiekzz.com.puml.model.plantuml.PlantUMLTextRequest
+import com.fiekzz.com.puml.utils.cache.UMLCache
 import com.fiekzz.com.puml.utils.contenttype.AppContentType
 import com.fiekzz.com.puml.utils.debug.logger
 import com.fiekzz.com.puml.utils.plantuml.ImageService
@@ -30,6 +31,7 @@ import javax.validation.Valid
 @RestController
 @RequestMapping(APIROUTES.API_ROOT)
 class AppController(
+    private val umlCache: UMLCache,
     private val imageService: ImageService,
 ) {
 

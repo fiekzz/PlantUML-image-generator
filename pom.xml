@@ -112,6 +112,54 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+            <plugin>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <configuration>
+                    <buildArgs>
+                        <!-- Network protocols -->
+                        <arg>--enable-url-protocols=http,https</arg>
+
+                        <!-- Build time initialization (only safe classes) -->
+                        <arg>--initialize-at-build-time=org.slf4j</arg>
+                        <arg>--initialize-at-build-time=ch.qos.logback</arg>
+                        <arg>--initialize-at-build-time=org.apache.logging.log4j</arg>
+
+                        <!-- Runtime initialization for ALL AWT (critical for PlantUML) -->
+                        <arg>--initialize-at-run-time=java.awt.image</arg>
+                        <arg>--initialize-at-run-time=java.awt.color</arg>
+                        <arg>--initialize-at-run-time=java.awt.font</arg>
+                        <arg>--initialize-at-run-time=java.awt.geom</arg>
+                        <arg>--initialize-at-run-time=java.awt</arg>
+                        <arg>--initialize-at-run-time=sun.awt</arg>
+                        <arg>--initialize-at-run-time=sun.java2d</arg>
+                        <arg>--initialize-at-run-time=sun.font</arg>
+
+                        <!-- Runtime initialization for PlantUML -->
+                        <arg>--initialize-at-run-time=net.sourceforge.plantuml</arg>
+
+                        <!-- Charset and security -->
+                        <arg>-H:+AddAllCharsets</arg>
+                        <arg>--enable-all-security-services</arg>
+
+                        <!-- AWT support for PlantUML -->
+                        <arg>-H:+UnlockExperimentalVMOptions</arg>
+                        <arg>-J-Djava.awt.headless=true</arg>
+
+                        <!-- Include resources needed by PlantUML -->
+                        <arg>-H:IncludeResources=.*\.png$</arg>
+                        <arg>-H:IncludeResources=.*\.svg$</arg>
+                        <arg>-H:IncludeResources=.*\.txt$</arg>
+                        <arg>-H:IncludeResources=.*\.ttf$</arg>
+
+                        <!-- Error reporting (useful for debugging) -->
+                        <arg>-H:+ReportExceptionStackTraces</arg>
+
+                        <!-- Allow incomplete classpath -->
+                        <arg>--allow-incomplete-classpath</arg>
+                    </buildArgs>
+                </configuration>
+            </plugin>
 			<plugin>
 				<groupId>org.jetbrains.kotlin</groupId>
 				<artifactId>kotlin-maven-plugin</artifactId>
